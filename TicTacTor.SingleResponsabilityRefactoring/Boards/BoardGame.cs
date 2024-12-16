@@ -9,7 +9,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
     internal class BoardGame : IBoardGame
     {
         private readonly List<ICell> _grid;
-        private readonly List<IPlayer> _players;
+        private readonly IPlayer[] _players;
         private IPlayer _currentPlayer;
 
         private BoardGame()
@@ -27,7 +27,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
                 Cell.EmptyCell(3, 3),
             };
 
-            this._players = new List<IPlayer>()
+            this._players = new IPlayer[2]
             {
                 Player.CreatePlayer(GameSymbol.O),
                 Player.CreatePlayer(GameSymbol.X),
