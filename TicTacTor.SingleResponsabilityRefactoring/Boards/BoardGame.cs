@@ -1,24 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TicTacTor.SingleResponsabilityRefactoring.Boards.Grids;
+using TicTacTor.SingleResponsabilityRefactoring.Players;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Board
+namespace TicTacTor.SingleResponsabilityRefactoring.Boards
 {
-    internal enum GameSymbols
+    internal class BoardGame : IBoardGame
     {
-        X = 'X',
-        O = 'O'
-    }
-
-    internal class BoardGame
-    {
-        private GameSymbols _currentPlayer;
-        private readonly List<Cell> _grid;
+        private readonly List<ICell> _grid;
+        private readonly List<IPlayer> _players;
+        private IPlayer _currentPlayer;
 
         private BoardGame()
         {
-            this._currentPlayer = GameSymbols.O;
-            this._grid = new List<Cell>()
+            this._grid = new List<ICell>()
             {
                 Cell.EmptyCell(1, 1),
                 Cell.EmptyCell(1, 2),
@@ -30,26 +26,24 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Board
                 Cell.EmptyCell(3, 2),
                 Cell.EmptyCell(3, 3),
             };
+
+            this._players = new List<IPlayer>()
+            {
+                Player.CreatePlayer(GameSymbol.O),
+                Player.CreatePlayer(GameSymbol.X),
+            };
+
+            this._currentPlayer = this._players[0];
         }
 
-        internal static BoardGame CreateBoardGame()
-            => new BoardGame();
-
-        internal GameSymbols CurrentPlayer 
-            => this._currentPlayer;
-
-        internal void ChangePlayer()
-            => this._currentPlayer = this._currentPlayer == GameSymbols.X ?
-                GameSymbols.O : GameSymbols.X;
-
-        private Cell? GetCell(int row, int column)
+        private ICell? GetCell(int row, int column)
             => this._grid.Where(cell => cell.Row == row)
                 .Where(cell => cell.Column == column)
                 .FirstOrDefault();
 
         private char GetCellContent(int row, int column)
         {
-            Cell? currentCell = GetCell(row, column);
+            ICell? currentCell = GetCell(row, column);
 
             if (currentCell is not null 
                 && currentCell.Value.HasValue)
@@ -63,65 +57,77 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Board
         private void DisplayGameBoardLine(char leftCell, char middleCell, char rightCell)
             => Console.WriteLine($"|  {leftCell}  |  {middleCell}  |  {rightCell}  |");
 
-        internal bool PlayOnGameBoard(int targetRow, int targetColumn)
-        {
-            Cell? cell = this.GetCell(targetRow, targetColumn);
+        public static BoardGame CreateBoardGame()
+            => new BoardGame();
 
-            if (cell == null || cell.Value == (char)GameSymbols.X || cell.Value == (char)GameSymbols.O)
+        public IPlayer CurrentPlayer
+        {
+            get => this._currentPlayer;
+        }
+
+        public void ChangePlayer()
+            => this._currentPlayer = (this._currentPlayer == this._players[0]) ?
+                this._players[1] : this._players[0];
+
+        public bool PlayOnGameBoard(int targetRow, int targetColumn)
+        {
+            ICell? cell = this.GetCell(targetRow, targetColumn);
+
+            if (cell == null || cell.Value == (char)GameSymbol.X || cell.Value == (char)GameSymbol.O)
             {
                 return false;
             }
 
-            cell.UpdateValue((char)this.CurrentPlayer);
+            cell.UpdateValue(this._currentPlayer.GetCurrentPlayer());
             
             return true;
         }
 
-        internal bool IsGameBoardWin()
+        public bool IsGameBoardWin()
         {
-            IEnumerable<IGrouping<int, Cell>> rows = this._grid
+            IEnumerable<IGrouping<int, ICell>> rows = this._grid
                 .GroupBy(cell => cell.Row);
 
             if (rows.Any(row =>
-                row.All(cell => cell.Value == (char)GameSymbols.X) ||
-                row.All(cell => cell.Value == (char)GameSymbols.O)))
+                row.All(cell => cell.Value == (char)GameSymbol.X) ||
+                row.All(cell => cell.Value == (char)GameSymbol.O)))
             {
                 return true;
             }
 
-            IEnumerable<IGrouping<int, Cell>> columns = this._grid
+            IEnumerable<IGrouping<int, ICell>> columns = this._grid
                 .GroupBy(cell => cell.Column);
 
             if (columns.Any(column =>
-                column.All(cell => cell.Value == (char)GameSymbols.X) ||
-                column.All(cell => cell.Value == (char)GameSymbols.O)))
+                column.All(cell => cell.Value == (char)GameSymbol.X) ||
+                column.All(cell => cell.Value == (char)GameSymbol.O)))
             {
                 return true;
             }
 
-            IEnumerable<Cell> firstDiagonal = this._grid.Where(c => c.Row == c.Column);
+            IEnumerable<ICell> firstDiagonal = this._grid.Where(c => c.Row == c.Column);
 
-            IEnumerable<Cell> secondDiagonal = this._grid.Where(c => (c.Row + c.Column) == 4);
+            IEnumerable<ICell> secondDiagonal = this._grid.Where(c => (c.Row + c.Column) == 4);
 
-            List<IEnumerable<Cell>> diagonals = new List<IEnumerable<Cell>>()
+            List<IEnumerable<ICell>> diagonals = new List<IEnumerable<ICell>>()
             {
                 firstDiagonal,
                 secondDiagonal
             };
 
             if (diagonals.Any(diagonal =>
-                diagonal.All(cell => cell.Value == (char)GameSymbols.X) ||
-                diagonal.All(cell => cell.Value == (char)GameSymbols.O)))
+                diagonal.All(cell => cell.Value == (char)GameSymbol.X) ||
+                diagonal.All(cell => cell.Value == (char)GameSymbol.O)))
             {
                 return true;
             }
 
             return false;
         }
-        internal bool IsGameBoardFull()
+        public bool IsGameBoardFull()
             => this._grid.All(cell => cell.Value.HasValue);
 
-        internal void DisplayGameBoard()
+        public void DisplayGameBoard()
         {
             Console.WriteLine(new string('=', Console.WindowWidth));
             Console.WriteLine(".NET MAUI".PadLeft(Console.WindowWidth / 2));

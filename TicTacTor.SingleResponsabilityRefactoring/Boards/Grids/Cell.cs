@@ -1,6 +1,6 @@
-﻿namespace TicTacTor.SingleResponsabilityRefactoring.Board
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.Boards.Grids
 {
-    internal class Cell
+    internal class Cell : ICell
     {
         public int Row { get; private set; }
         public int Column { get; private set; }
@@ -20,7 +20,7 @@
             Value = null;
         }
 
-        internal void UpdateValue(char value)
+        public void UpdateValue(char value)
         {
             Value = value;
         }

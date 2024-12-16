@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Session
+namespace TicTacTor.SingleResponsabilityRefactoring.Helpers
 {
-    internal static class Helpers
+    internal static class Helper
     {
         internal static bool IsQuitInstruction(string? input)
         {
