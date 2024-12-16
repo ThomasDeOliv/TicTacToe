@@ -119,7 +119,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Board
             return false;
         }
         internal bool IsGameBoardFull()
-            => this._grid.All(cell => !cell.Value.HasValue);
+            => this._grid.All(cell => cell.Value.HasValue);
 
         internal void DisplayGameBoard()
         {
