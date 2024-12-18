@@ -11,11 +11,20 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Services
         private readonly IServiceCollection _serviceDescriptors;
         private readonly IServiceProvider _serviceProvider;
 
+        private readonly string? _env;
+
         public DIService()
         {
+#if DEBUG
+            this._env = "development";
+#else
+            this._env = null;
+#endif
+            string configFile = !string.IsNullOrEmpty(this._env) ? $"appsettings{this._env}.json" : $"appsettings.json";
+
             this._configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(configFile, optional: false, reloadOnChange: true)
                 .Build();
 
             this._serviceDescriptors = new ServiceCollection()

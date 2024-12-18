@@ -12,7 +12,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
             _symbol = (char)gameSymbol;
         }
 
-        internal static Player CreatePlayer(GameSymbol gameSymbol)
+        public static Player CreatePlayer(GameSymbol gameSymbol)
         {
             return new Player(gameSymbol);
         }

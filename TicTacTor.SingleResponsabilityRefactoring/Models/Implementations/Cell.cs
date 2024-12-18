@@ -25,7 +25,7 @@
             Value = value;
         }
 
-        internal static Cell EmptyCell(int row, int column)
+        public static Cell EmptyCell(int row, int column)
             => new Cell(row, column);
     }
 
