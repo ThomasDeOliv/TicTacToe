@@ -1,4 +1,4 @@
-﻿namespace TicTacTor.SingleResponsabilityRefactoring.Boards.Grids
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel.CellModel
 {
     internal class Cell : ICell
     {
@@ -25,7 +25,7 @@
             Value = value;
         }
 
-        internal static Cell EmptyCell(int row, int column)
+        public static Cell EmptyCell(int row, int column)
             => new Cell(row, column);
     }
 

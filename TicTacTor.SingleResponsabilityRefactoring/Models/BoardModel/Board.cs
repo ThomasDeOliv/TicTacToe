@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TicTacTor.SingleResponsabilityRefactoring.Boards.Grids;
-using TicTacTor.SingleResponsabilityRefactoring.Players;
+using TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel.CellModel;
+using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Boards
+namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 {
-    internal class BoardGame : IBoardGame
+    internal class Board : IBoard
     {
         private readonly List<ICell> _grid;
-        private readonly List<IPlayer> _players;
+        private readonly IPlayer _player;
+        private readonly IPlayer _aIPlayer;
+
         private IPlayer _currentPlayer;
 
-        private BoardGame()
+        private Board()
         {
             this._grid = new List<ICell>()
             {
@@ -27,13 +29,10 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
                 Cell.EmptyCell(3, 3),
             };
 
-            this._players = new List<IPlayer>()
-            {
-                Player.CreatePlayer(GameSymbol.O),
-                Player.CreatePlayer(GameSymbol.X),
-            };
+            this._player = Player.CreatePlayer();
+            this._aIPlayer = AIPlayer.CreatePlayer();
 
-            this._currentPlayer = this._players[0];
+            this._currentPlayer = _player;
         }
 
         private ICell? GetCell(int row, int column)
@@ -45,7 +44,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
         {
             ICell? currentCell = GetCell(row, column);
 
-            if (currentCell is not null 
+            if (currentCell is not null
                 && currentCell.Value.HasValue)
             {
                 return (char)currentCell.Value;
@@ -57,8 +56,8 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
         private void DisplayGameBoardLine(char leftCell, char middleCell, char rightCell)
             => Console.WriteLine($"|  {leftCell}  |  {middleCell}  |  {rightCell}  |");
 
-        public static BoardGame CreateBoardGame()
-            => new BoardGame();
+        public static Board CreateBoardGame()
+            => new Board();
 
         public IPlayer CurrentPlayer
         {
@@ -66,20 +65,20 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
         }
 
         public void ChangePlayer()
-            => this._currentPlayer = (this._currentPlayer == this._players[0]) ?
-                this._players[1] : this._players[0];
+            => this._currentPlayer = this._currentPlayer == this._aIPlayer ?
+                this._player : this._aIPlayer;
 
         public bool PlayOnGameBoard(int targetRow, int targetColumn)
         {
-            ICell? cell = this.GetCell(targetRow, targetColumn);
+            ICell? cell = GetCell(targetRow, targetColumn);
 
             if (cell == null || cell.Value == (char)GameSymbol.X || cell.Value == (char)GameSymbol.O)
             {
                 return false;
             }
 
-            cell.UpdateValue(this._currentPlayer.GetCurrentPlayer());
-            
+            cell.UpdateValue(this._currentPlayer.Symbol);
+
             return true;
         }
 
@@ -95,7 +94,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
                 return true;
             }
 
-            IEnumerable<IGrouping<int, ICell>> columns = this._grid
+            IEnumerable<IGrouping<int, ICell>> columns = _grid
                 .GroupBy(cell => cell.Column);
 
             if (columns.Any(column =>
@@ -107,7 +106,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
 
             IEnumerable<ICell> firstDiagonal = this._grid.Where(c => c.Row == c.Column);
 
-            IEnumerable<ICell> secondDiagonal = this._grid.Where(c => (c.Row + c.Column) == 4);
+            IEnumerable<ICell> secondDiagonal = this._grid.Where(c => c.Row + c.Column == 4);
 
             List<IEnumerable<ICell>> diagonals = new List<IEnumerable<ICell>>()
             {
@@ -125,7 +124,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
             return false;
         }
         public bool IsGameBoardFull()
-            => this._grid.All(cell => cell.Value.HasValue);
+            => _grid.All(cell => cell.Value.HasValue);
 
         public void DisplayGameBoard()
         {
@@ -140,6 +139,16 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Boards
             Console.WriteLine($"|-----|-----|-----|");
             DisplayGameBoardLine(GetCellContent(3, 1), GetCellContent(3, 2), GetCellContent(3, 3));
             Console.WriteLine($"|-----------------|");
+        }
+
+        public void SetPlayerSymbol(GameSymbol gameSymbol)
+        {
+            this._player.Symbol = (char)gameSymbol;
+        }
+
+        public void SetAIPlayerSymbol(GameSymbol gameSymbol)
+        {
+            this._aIPlayer.Symbol = (char)gameSymbol;
         }
     }
 }
