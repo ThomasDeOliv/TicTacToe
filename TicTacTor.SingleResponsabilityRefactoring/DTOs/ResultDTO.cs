@@ -1,38 +1,48 @@
-﻿namespace TicTacTor.SingleResponsabilityRefactoring.DTOs
+﻿using System;
+
+namespace TicTacTor.SingleResponsabilityRefactoring.DTOs
 {
-    internal abstract record ResultDTO
+    internal record ResultDTO<T> where T : class?
     {
         private readonly bool _success;
+        private readonly T? _result;
+        private readonly string? _reason;
 
-        protected ResultDTO(bool success)
+        private ResultDTO(T result)
         {
-            _success = success;
+            this._success = true;
+            this._result = result;
+            this._reason = null;
         }
 
-        public bool Success { get => _success; }
-    }
-
-    internal record SuccessResult<T> : ResultDTO where T : class
-    {
-        private readonly T _result;
-
-        public SuccessResult(T result) : base(true)
+        private ResultDTO(string reason)
         {
-            _result = result;
+            this._success = false;
+            this._result = null;
+            this._reason = reason;
         }
 
-        public T Result { get => _result; }
-    }
-
-    internal record FailResult : ResultDTO
-    {
-        private readonly string _errorMessage;
-
-        public FailResult(string errorMessage) : base(false)
+        public bool Success { get => this._success; }
+        public string? Reason { get => this._reason; }
+        public bool HasValue { get => this._reason is not null; }
+        public T? Value
         {
-            _errorMessage = errorMessage;
+            get
+            {
+                if (!this.HasValue)
+                    throw new InvalidOperationException("Cannot access Value because operation failed.");
+                return this._result;
+            }
         }
 
-        public string ErrorMessage { get => _errorMessage; }
+        public static ResultDTO<T> SuccessdResult(T result)
+        {
+            return new ResultDTO<T>(result);
+        }
+
+        public static ResultDTO<T> FailedResult(string reason)
+        {
+            return new ResultDTO<T>(reason);
+        }
     }
 }

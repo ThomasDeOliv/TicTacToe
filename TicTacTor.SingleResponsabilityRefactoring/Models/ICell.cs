@@ -1,4 +1,4 @@
-﻿namespace TicTacTor.SingleResponsabilityRefactoring.Boards.Grids
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.Models
 {
     internal interface ICell
     {

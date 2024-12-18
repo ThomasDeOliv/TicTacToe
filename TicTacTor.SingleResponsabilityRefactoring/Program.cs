@@ -1,4 +1,4 @@
-﻿using TicTacTor.SingleResponsabilityRefactoring.Sessions;
+﻿using TicTacTor.SingleResponsabilityRefactoring.Models.Implementations;
 
 namespace TicTacTor.SingleResponsabilityRefactoring
 {
@@ -6,7 +6,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring
     {
         internal static void Main(string[] args)
         {
-            Session gameSession = Session.CreateGame();
+            Game gameSession = Game.CreateGame();
             gameSession.StartGameSession();
         }
     }

@@ -1,8 +1,6 @@
-﻿using TicTacTor.SingleResponsabilityRefactoring.Players;
-
-namespace TicTacTor.SingleResponsabilityRefactoring.Boards
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.Models
 {
-    internal interface IBoardGame
+    internal interface IBoard
     {
         IPlayer CurrentPlayer { get; }
         void ChangePlayer();

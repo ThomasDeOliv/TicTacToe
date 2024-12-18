@@ -1,6 +1,7 @@
 ﻿using TicTacTor.SingleResponsabilityRefactoring.DTOs;
+using TicTacTor.SingleResponsabilityRefactoring.Models.Implementations;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Players
+namespace TicTacTor.SingleResponsabilityRefactoring.Models
 {
     internal enum GameSymbol
     {
@@ -11,6 +12,6 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Players
     internal interface IPlayer
     {
         char GetCurrentPlayer();
-        ResultDTO GetNextMove(string input);
+        ResultDTO<IPlayerMovesRecord> GetNextMove(string? input);
     }
 }

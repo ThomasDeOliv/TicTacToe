@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Helpers
+namespace TicTacTor.SingleResponsabilityRefactoring.Models.Helpers
 {
-    internal static class Helper
+    internal static class PlayerUtilities
     {
-        internal static bool IsQuitInstruction(string? input)
+        public static bool IsQuitInstruction(string? input)
         {
             return string.Compare(input, "q", StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        internal static bool TryGetCoordinates(this string? input, out (int, int)? coordinates)
+        public static bool TryGetCoordinates(this string? input, out (int, int)? coordinates)
         {
             string[]? splittedInput = input?.Split(' ');
             coordinates = null;
@@ -23,14 +23,9 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Helpers
             return true;
         }
 
-        internal static bool EnsureValidCoordinates(int rowOrColumnCoordinates)
+        public static bool EnsureValidCoordinates(int rowOrColumnCoordinates)
         {
-            if (rowOrColumnCoordinates < 1 || rowOrColumnCoordinates > 3)
-            {
-                return false;
-            }
-
-            return true;
+            return rowOrColumnCoordinates >= 1 && rowOrColumnCoordinates <= 3;
         }
     }
 }
