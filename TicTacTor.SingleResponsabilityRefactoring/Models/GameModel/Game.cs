@@ -1,7 +1,10 @@
 ﻿using System;
-using TicTacTor.SingleResponsabilityRefactoring.DTOs;
+using TicTacTor.SingleResponsabilityRefactoring.DTO;
+using TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel;
+using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel;
+using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel.PlayerMoveModel;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
+namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
 {
     internal class Game : IGame
     {
@@ -10,8 +13,8 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
 
         private Game()
         {
-            _boardGame = Board.CreateBoardGame();
-            _played = false;
+            this._boardGame = Board.CreateBoardGame();
+            this._played = false;
         }
 
         public static Game CreateGame()
@@ -19,19 +22,49 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
             return new Game();
         }
 
+        public void InitGameSession()
+        {
+            Console.Write("Selectionnez votre équipe (X ou O) : ");
+            string? input = Console.ReadLine();
+
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                if (input.Equals("x", StringComparison.OrdinalIgnoreCase))
+                {
+                    this._boardGame.SetPlayerSymbol(GameSymbol.X);
+                    this._boardGame.SetAIPlayerSymbol(GameSymbol.O);
+                }
+                else if (input.Equals("o", StringComparison.OrdinalIgnoreCase))
+                {
+                    this._boardGame.SetPlayerSymbol(GameSymbol.O);
+                    this._boardGame.SetAIPlayerSymbol(GameSymbol.X);
+                }
+                else
+                {
+                    Console.Error.WriteLine("Invalid input provided.");
+                    System.Environment.Exit(1);
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine("Empty input provided.");
+                System.Environment.Exit(1);
+            }
+        }
+
         public void StartGameSession()
         {
-            if (!_played)
+            if (!this._played)
             {
-                _boardGame.DisplayGameBoard();
+                this._boardGame.DisplayGameBoard();
 
                 while (true)
                 {
-                    Console.Write($"Player {_boardGame.CurrentPlayer.GetCurrentPlayer()} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
+                    Console.Write($"Player {this._boardGame.CurrentPlayer.Symbol} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
 
-                    string? input = Console.ReadLine();
+                    string? input = this._boardGame.CurrentPlayer is AIPlayer ? null : Console.ReadLine();
 
-                    ResultDTO<IPlayerMovesRecord> result = _boardGame.CurrentPlayer.GetNextMove(input);
+                    ResultDTO<IPlayerMove> result = this._boardGame.CurrentPlayer.GetNextMove(input);
 
                     if (!result.Success)
                     {
@@ -72,7 +105,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                     }
 
                     // Play
-                    if (result.Value is not null && result.HasValue && !_boardGame.PlayOnGameBoard(result.Value.Row, result.Value.Column))
+                    if (result.Value is not null && !this._boardGame.PlayOnGameBoard(result.Value.Row, result.Value.Column))
                     {
                         Console.WriteLine("Invalid move");
                         continue;
@@ -82,27 +115,27 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                     Console.Clear();
 
                     // Refresh view
-                    _boardGame.DisplayGameBoard();
+                    this._boardGame.DisplayGameBoard();
 
                     // Check if win
-                    if (_boardGame.IsGameBoardWin())
+                    if (this._boardGame.IsGameBoardWin())
                     {
-                        Console.WriteLine($"Player {_boardGame.CurrentPlayer.GetCurrentPlayer()} has won the game !!!!");
+                        Console.WriteLine($"Player {this._boardGame.CurrentPlayer.Symbol} has won the game !!!!");
                         break;
                     }
 
                     // Check if board is full
-                    if (_boardGame.IsGameBoardFull())
+                    if (this._boardGame.IsGameBoardFull())
                     {
                         Console.WriteLine($"It's a draw");
                         break;
                     }
 
                     // Change player
-                    _boardGame.ChangePlayer();
+                    this._boardGame.ChangePlayer();
                 }
 
-                _played = true;
+                this._played = true;
             }
             else
             {
@@ -115,7 +148,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                 Console.WriteLine($"Results :");
 
                 // Display game
-                _boardGame.DisplayGameBoard();
+                this._boardGame.DisplayGameBoard();
             }
         }
     }

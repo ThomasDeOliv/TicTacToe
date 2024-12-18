@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Models.Helpers
+namespace TicTacTor.SingleResponsabilityRefactoring.Helpers
 {
     internal static class PlayerUtilities
     {
@@ -11,8 +11,8 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Helpers
 
         public static bool TryGetCoordinates(this string? input, out (int, int)? coordinates)
         {
-            string[]? splittedInput = input?.Split(' ');
             coordinates = null;
+            string[]? splittedInput = input?.Split(' ');
 
             if (!int.TryParse(splittedInput?[0], out int targetRow) || !int.TryParse(splittedInput?[1], out int targetColumn))
             {

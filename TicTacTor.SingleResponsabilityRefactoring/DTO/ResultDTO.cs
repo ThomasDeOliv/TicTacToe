@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.DTOs
+namespace TicTacTor.SingleResponsabilityRefactoring.DTO
 {
     internal record ResultDTO<T> where T : class?
     {
@@ -24,13 +24,10 @@ namespace TicTacTor.SingleResponsabilityRefactoring.DTOs
 
         public bool Success { get => this._success; }
         public string? Reason { get => this._reason; }
-        public bool HasValue { get => this._reason is not null; }
         public T? Value
         {
             get
             {
-                if (!this.HasValue)
-                    throw new InvalidOperationException("Cannot access Value because operation failed.");
                 return this._result;
             }
         }

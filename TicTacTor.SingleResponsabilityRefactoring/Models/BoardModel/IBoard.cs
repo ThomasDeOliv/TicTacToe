@@ -1,4 +1,6 @@
-﻿namespace TicTacTor.SingleResponsabilityRefactoring.Models
+﻿using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel;
+
+namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 {
     internal interface IBoard
     {
@@ -8,5 +10,7 @@
         bool IsGameBoardWin();
         bool IsGameBoardFull();
         void DisplayGameBoard();
+        void SetPlayerSymbol(GameSymbol gameSymbol);
+        void SetAIPlayerSymbol(GameSymbol gameSymbol);
     }
 }

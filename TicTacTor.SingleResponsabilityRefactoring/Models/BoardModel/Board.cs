@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel.CellModel;
+using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel;
 
-namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
+namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 {
     internal class Board : IBoard
     {
         private readonly List<ICell> _grid;
-        private readonly IPlayer[] _players;
+        private readonly IPlayer _player;
+        private readonly IPlayer _aIPlayer;
+
         private IPlayer _currentPlayer;
 
         private Board()
         {
-            _grid = new List<ICell>()
+            this._grid = new List<ICell>()
             {
                 Cell.EmptyCell(1, 1),
                 Cell.EmptyCell(1, 2),
@@ -25,17 +29,14 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                 Cell.EmptyCell(3, 3),
             };
 
-            _players = new IPlayer[2]
-            {
-                Player.CreatePlayer(GameSymbol.O),
-                Player.CreatePlayer(GameSymbol.X),
-            };
+            this._player = Player.CreatePlayer();
+            this._aIPlayer = AIPlayer.CreatePlayer();
 
-            _currentPlayer = _players[0];
+            this._currentPlayer = _player;
         }
 
         private ICell? GetCell(int row, int column)
-            => _grid.Where(cell => cell.Row == row)
+            => this._grid.Where(cell => cell.Row == row)
                 .Where(cell => cell.Column == column)
                 .FirstOrDefault();
 
@@ -60,12 +61,12 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
 
         public IPlayer CurrentPlayer
         {
-            get => _currentPlayer;
+            get => this._currentPlayer;
         }
 
         public void ChangePlayer()
-            => _currentPlayer = _currentPlayer == _players[0] ?
-                _players[1] : _players[0];
+            => this._currentPlayer = this._currentPlayer == this._aIPlayer ?
+                this._player : this._aIPlayer;
 
         public bool PlayOnGameBoard(int targetRow, int targetColumn)
         {
@@ -76,14 +77,14 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                 return false;
             }
 
-            cell.UpdateValue(_currentPlayer.GetCurrentPlayer());
+            cell.UpdateValue(this._currentPlayer.Symbol);
 
             return true;
         }
 
         public bool IsGameBoardWin()
         {
-            IEnumerable<IGrouping<int, ICell>> rows = _grid
+            IEnumerable<IGrouping<int, ICell>> rows = this._grid
                 .GroupBy(cell => cell.Row);
 
             if (rows.Any(row =>
@@ -103,9 +104,9 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
                 return true;
             }
 
-            IEnumerable<ICell> firstDiagonal = _grid.Where(c => c.Row == c.Column);
+            IEnumerable<ICell> firstDiagonal = this._grid.Where(c => c.Row == c.Column);
 
-            IEnumerable<ICell> secondDiagonal = _grid.Where(c => c.Row + c.Column == 4);
+            IEnumerable<ICell> secondDiagonal = this._grid.Where(c => c.Row + c.Column == 4);
 
             List<IEnumerable<ICell>> diagonals = new List<IEnumerable<ICell>>()
             {
@@ -138,6 +139,16 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.Implementations
             Console.WriteLine($"|-----|-----|-----|");
             DisplayGameBoardLine(GetCellContent(3, 1), GetCellContent(3, 2), GetCellContent(3, 3));
             Console.WriteLine($"|-----------------|");
+        }
+
+        public void SetPlayerSymbol(GameSymbol gameSymbol)
+        {
+            this._player.Symbol = (char)gameSymbol;
+        }
+
+        public void SetAIPlayerSymbol(GameSymbol gameSymbol)
+        {
+            this._aIPlayer.Symbol = (char)gameSymbol;
         }
     }
 }
