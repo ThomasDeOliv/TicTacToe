@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 using TicTacToe.SingleResponsabilityRefactoring.Models.GameModel;
-using TicTacToe.SingleResponsabilityRefactoring.Services;
+using TicTacToe.SingleResponsabilityRefactoring.Services.DI;
 
 namespace TicTacToe.SingleResponsabilityRefactoring
 {
@@ -17,12 +18,16 @@ namespace TicTacToe.SingleResponsabilityRefactoring
         {
             IDIService serviceProvider = DIService.Create();
             IGame? game = serviceProvider.ServiceProvider.GetService<IGame>();
-            
-            if (game is not null)
+
+            if (game is null)
             {
-                game.Init();
-                game.Play();
+                Console.Error.WriteLine("Cannot find service 'IGame' in service provider.");
+                Environment.Exit(1);
             }
+
+            game.Init();
+            Task gameTask = game.PlayAync();
+            gameTask.Wait();
         }
     }
 }

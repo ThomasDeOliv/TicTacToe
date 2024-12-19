@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TicTacToe.SingleResponsabilityRefactoring.DTO;
 using TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel.PlayerMoveModel;
 
@@ -6,9 +8,11 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     public partial class HumanPlayer : Player
     {
+        public override bool IsAI { get; }
+
         protected HumanPlayer() : base()
         {
-            
+            this.IsAI = false;
         }
 
         public override ResultDTO<IPlayerMove> GetNextMove(string? input)
@@ -28,17 +32,31 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel
                 return ResultDTO<IPlayerMove>.CreateFailedResult("InvalidInput");
             }
 
-            if (!HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item1))
+            bool isValidRow = HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item1);
+            bool isValidColumn = HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item2);
+
+            if (!isValidRow && !isValidColumn)
+            {
+                return ResultDTO<IPlayerMove>.CreateFailedResult("OutOfRangeRowAndColumn");
+            }
+
+            if (!isValidRow)
             {
                 return ResultDTO<IPlayerMove>.CreateFailedResult("OutOfRangeRow");
             }
 
-            if (!HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item2))
+            if (!isValidColumn)
             {
                 return ResultDTO<IPlayerMove>.CreateFailedResult("OutOfRangeColumn");
             }
 
             return ResultDTO<IPlayerMove>.CreateSuccessdResult(PlayerMove.Create(coordinates.Value.Item1, coordinates.Value.Item2));
+        }
+
+        public override async Task<ResultDTO<IPlayerMove>> GetNextMoveAsync(Func<ValueTask> waitingAsyncCallback, string? input, CancellationToken cancellationToken = default)
+        {
+            await waitingAsyncCallback.Invoke();
+            return await Task.FromResult(this.GetNextMove(input));
         }
 
         private static bool IsQuitInstruction(string? input)

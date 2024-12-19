@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace TicTacToe.SingleResponsabilityRefactoring.Services
+namespace TicTacToe.SingleResponsabilityRefactoring.Services.DI
 {
     public interface IDIService
     {
