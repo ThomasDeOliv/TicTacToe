@@ -8,12 +8,12 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
 {
     internal class Game : IGame
     {
-        private readonly IBoard _boardGame;
+        private readonly IBoard _board;
         private bool _played;
 
-        public Game()
+        public Game(IBoard board)
         {
-            this._boardGame = new Board();
+            this._board = board;
             this._played = false;
         }
 
@@ -26,13 +26,13 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
             {
                 if (input.Equals("x", StringComparison.OrdinalIgnoreCase))
                 {
-                    this._boardGame.SetPlayerSymbol(GameSymbol.X);
-                    this._boardGame.SetAIPlayerSymbol(GameSymbol.O);
+                    this._board.SetPlayerSymbol(GameSymbol.X);
+                    this._board.SetAIPlayerSymbol(GameSymbol.O);
                 }
                 else if (input.Equals("o", StringComparison.OrdinalIgnoreCase))
                 {
-                    this._boardGame.SetPlayerSymbol(GameSymbol.O);
-                    this._boardGame.SetAIPlayerSymbol(GameSymbol.X);
+                    this._board.SetPlayerSymbol(GameSymbol.O);
+                    this._board.SetAIPlayerSymbol(GameSymbol.X);
                 }
                 else
                 {
@@ -51,15 +51,15 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
         {
             if (!this._played)
             {
-                this._boardGame.DisplayGameBoard();
+                this._board.DisplayGameBoard();
 
                 while (true)
                 {
-                    Console.Write($"Player {this._boardGame.CurrentPlayer.Symbol} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
+                    Console.Write($"Player {this._board.CurrentPlayer.Symbol} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
 
-                    string? input = this._boardGame.CurrentPlayer is AIPlayer ? null : Console.ReadLine();
+                    string? input = this._board.CurrentPlayer is AIPlayer ? null : Console.ReadLine();
 
-                    ResultDTO<IPlayerMove> result = this._boardGame.CurrentPlayer.GetNextMove(input);
+                    ResultDTO<IPlayerMove> result = this._board.CurrentPlayer.GetNextMove(input);
 
                     if (!result.Success)
                     {
@@ -100,7 +100,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
                     }
 
                     // Play
-                    if (result.Value is not null && !this._boardGame.PlayOnGameBoard(result.Value.Row, result.Value.Column))
+                    if (result.Value is not null && !this._board.PlayOnGameBoard(result.Value.Row, result.Value.Column))
                     {
                         Console.WriteLine("Invalid move");
                         continue;
@@ -110,24 +110,24 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
                     Console.Clear();
 
                     // Refresh view
-                    this._boardGame.DisplayGameBoard();
+                    this._board.DisplayGameBoard();
 
                     // Check if win
-                    if (this._boardGame.IsGameBoardWin())
+                    if (this._board.IsGameBoardWin())
                     {
-                        Console.WriteLine($"Player {this._boardGame.CurrentPlayer.Symbol} has won the game !!!!");
+                        Console.WriteLine($"Player {this._board.CurrentPlayer.Symbol} has won the game !!!!");
                         break;
                     }
 
                     // Check if board is full
-                    if (this._boardGame.IsGameBoardFull())
+                    if (this._board.IsGameBoardFull())
                     {
                         Console.WriteLine($"It's a draw");
                         break;
                     }
 
                     // Change player
-                    this._boardGame.ChangePlayer();
+                    this._board.ChangePlayer();
                 }
 
                 this._played = true;
@@ -143,7 +143,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
                 Console.WriteLine($"Results :");
 
                 // Display game
-                this._boardGame.DisplayGameBoard();
+                this._board.DisplayGameBoard();
             }
         }
     }

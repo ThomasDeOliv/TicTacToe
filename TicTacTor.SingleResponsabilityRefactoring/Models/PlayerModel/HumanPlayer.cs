@@ -6,6 +6,11 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     internal partial class HumanPlayer : Player
     {
+        public HumanPlayer() : base()
+        {
+            
+        }
+
         public override ResultDTO<IPlayerMove> GetNextMove(string? input)
         {
             if (string.IsNullOrEmpty(input))

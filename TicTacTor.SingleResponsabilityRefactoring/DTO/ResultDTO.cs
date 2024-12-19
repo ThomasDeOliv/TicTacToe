@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TicTacTor.SingleResponsabilityRefactoring.DTO
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.DTO
 {
     internal record ResultDTO<T> where T : class?
     {
