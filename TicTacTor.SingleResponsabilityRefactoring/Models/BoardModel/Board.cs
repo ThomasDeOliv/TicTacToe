@@ -14,7 +14,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 
         private IPlayer _currentPlayer;
 
-        private Board()
+        public Board()
         {
             this._grid = new List<ICell>()
             {
@@ -29,8 +29,8 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
                 Cell.EmptyCell(3, 3),
             };
 
-            this._player = Player.CreatePlayer();
-            this._aIPlayer = AIPlayer.CreatePlayer();
+            this._player = new Player();
+            this._aIPlayer = new AIPlayer();
 
             this._currentPlayer = _player;
         }
@@ -55,9 +55,6 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 
         private void DisplayGameBoardLine(char leftCell, char middleCell, char rightCell)
             => Console.WriteLine($"|  {leftCell}  |  {middleCell}  |  {rightCell}  |");
-
-        public static Board CreateBoardGame()
-            => new Board();
 
         public IPlayer CurrentPlayer
         {

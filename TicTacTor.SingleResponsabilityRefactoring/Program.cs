@@ -12,9 +12,9 @@ namespace TicTacTor.SingleResponsabilityRefactoring
     {
         internal static void Main(string[] args)
         {
-            Game gameSession = Game.CreateGame();
+            Game gameSession = new Game();
             gameSession.InitGameSession();
-            gameSession.StartGameSession();
+            gameSession.InitGame();
         }
     }
 }
