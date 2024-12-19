@@ -4,7 +4,7 @@
 	  <TargetFramework>net8.0</TargetFramework>
 	  <ImplicitUsings>disable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
-	  <RootNamespace>TicTacTor.SingleResponsabilityRefactoring</RootNamespace>
+	  <RootNamespace>TicTacToe.SingleResponsabilityRefactoring.Tests</RootNamespace>
 	  
 	  <IsPackable>false</IsPackable>
 	  <IsTestProject>true</IsTestProject>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\TicTacTor.SingleResponsabilityRefactoring\TicTacTor.SingleResponsabilityRefactoring.csproj" />
+	  <ProjectReference Include="..\TicTacToe.SingleResponsabilityRefactoring\TicTacToe.SingleResponsabilityRefactoring.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,4 @@
 using FluentAssertions;
-using System.Diagnostics;
 using TicTacToe.SingleResponsabilityRefactoring.DTO;
 using TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel;
 using TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel.PlayerMoveModel;
