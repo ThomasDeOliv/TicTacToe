@@ -6,14 +6,14 @@
         public int Column { get; private set; }
         public char? Value { get; private set; }
 
-        public Cell(int row, int column, char value)
+        protected Cell(int row, int column, char value)
         {
             Row = row;
             Column = column;
             Value = value;
         }
 
-        public Cell(int row, int column)
+        protected Cell(int row, int column)
         {
             Row = row;
             Column = column;
@@ -25,7 +25,10 @@
             Value = value;
         }
 
-        public static Cell EmptyCell(int row, int column)
+        public static Cell CreateCell(int row, int column, char value)
+            => new Cell(row, column, value);
+
+        public static Cell CreateEmptyCell(int row, int column)
             => new Cell(row, column);
     }
 

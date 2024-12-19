@@ -8,31 +8,31 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 {
     internal class Board : IBoard
     {
-        private readonly List<ICell> _grid;
-        private readonly IPlayer _player;
+        private readonly IEnumerable<ICell> _grid;
+        private readonly IPlayer _humanPlayer;
         private readonly IPlayer _aIPlayer;
 
         private IPlayer _currentPlayer;
 
-        public Board()
+        protected Board(IPlayer humanPlayer, IPlayer aIPlayer)
         {
             this._grid = new List<ICell>()
             {
-                Cell.EmptyCell(1, 1),
-                Cell.EmptyCell(1, 2),
-                Cell.EmptyCell(1, 3),
-                Cell.EmptyCell(2, 1),
-                Cell.EmptyCell(2, 2),
-                Cell.EmptyCell(2, 3),
-                Cell.EmptyCell(3, 1),
-                Cell.EmptyCell(3, 2),
-                Cell.EmptyCell(3, 3),
+                Cell.CreateEmptyCell(1, 1),
+                Cell.CreateEmptyCell(1, 2),
+                Cell.CreateEmptyCell(1, 3),
+                Cell.CreateEmptyCell(2, 1),
+                Cell.CreateEmptyCell(2, 2),
+                Cell.CreateEmptyCell(2, 3),
+                Cell.CreateEmptyCell(3, 1),
+                Cell.CreateEmptyCell(3, 2),
+                Cell.CreateEmptyCell(3, 3),
             };
 
-            this._player = new Player();
-            this._aIPlayer = new AIPlayer();
+            this._humanPlayer = humanPlayer;
+            this._aIPlayer = aIPlayer;
 
-            this._currentPlayer = _player;
+            this._currentPlayer = _humanPlayer;
         }
 
         private ICell? GetCell(int row, int column)
@@ -63,7 +63,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 
         public void ChangePlayer()
             => this._currentPlayer = this._currentPlayer == this._aIPlayer ?
-                this._player : this._aIPlayer;
+                this._humanPlayer : this._aIPlayer;
 
         public bool PlayOnGameBoard(int targetRow, int targetColumn)
         {
@@ -140,12 +140,17 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 
         public void SetPlayerSymbol(GameSymbol gameSymbol)
         {
-            this._player.Symbol = (char)gameSymbol;
+            this._humanPlayer.Symbol = (char)gameSymbol;
         }
 
         public void SetAIPlayerSymbol(GameSymbol gameSymbol)
         {
             this._aIPlayer.Symbol = (char)gameSymbol;
+        }
+
+        public static Board CreateBoard(IPlayer humanPlayer, IPlayer aIPlayer)
+        {
+            return new Board(humanPlayer, aIPlayer);
         }
     }
 }

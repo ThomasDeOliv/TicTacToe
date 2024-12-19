@@ -1,4 +1,7 @@
-﻿using TicTacTor.SingleResponsabilityRefactoring.Models.GameModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using TicTacTor.SingleResponsabilityRefactoring.Models.GameModel;
+using TicTacTor.SingleResponsabilityRefactoring.Services;
 
 namespace TicTacTor.SingleResponsabilityRefactoring
 {
@@ -12,9 +15,14 @@ namespace TicTacTor.SingleResponsabilityRefactoring
     {
         internal static void Main(string[] args)
         {
-            Game gameSession = new Game();
-            gameSession.InitGameSession();
-            gameSession.InitGame();
+            IDIService serviceProvider = DIService.CreateServiceProvider();
+            IGame? game = serviceProvider.ServiceProvider.GetService<IGame>();
+            
+            if (game is not null)
+            {
+                game.Init();
+                game.Play();
+            }
         }
     }
 }

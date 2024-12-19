@@ -1,43 +1,31 @@
-﻿using System;
-
-namespace TicTacTor.SingleResponsabilityRefactoring.DTO
+﻿namespace TicTacTor.SingleResponsabilityRefactoring.DTO
 {
     internal record ResultDTO<T> where T : class?
     {
-        private readonly bool _success;
-        private readonly T? _result;
-        private readonly string? _reason;
+        public bool Success { get; }
+        public string? Reason { get; }
+        public T? Value { get; }
 
-        private ResultDTO(T result)
+        protected ResultDTO(T result)
         {
-            this._success = true;
-            this._result = result;
-            this._reason = null;
+            this.Success = true;
+            this.Reason = null;
+            this.Value = result;
         }
 
-        private ResultDTO(string reason)
+        protected ResultDTO(string reason)
         {
-            this._success = false;
-            this._result = null;
-            this._reason = reason;
+            this.Success = false;
+            this.Reason = reason;
+            this.Value = null;
         }
 
-        public bool Success { get => this._success; }
-        public string? Reason { get => this._reason; }
-        public T? Value
-        {
-            get
-            {
-                return this._result;
-            }
-        }
-
-        public static ResultDTO<T> SuccessdResult(T result)
+        public static ResultDTO<T> CreateSuccessdResult(T result)
         {
             return new ResultDTO<T>(result);
         }
 
-        public static ResultDTO<T> FailedResult(string reason)
+        public static ResultDTO<T> CreateFailedResult(string reason)
         {
             return new ResultDTO<T>(reason);
         }
