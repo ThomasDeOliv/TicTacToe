@@ -5,10 +5,15 @@
         public int Row { get; }
         public int Column { get; }
 
-        public PlayerMove(int row, int column)
+        protected PlayerMove(int row, int column)
         {
             this.Row = row;
             this.Column = column;
+        }
+
+        public static PlayerMove CreatePlayerMove(int row, int column)
+        {
+            return new PlayerMove(row, column);
         }
     }
 }

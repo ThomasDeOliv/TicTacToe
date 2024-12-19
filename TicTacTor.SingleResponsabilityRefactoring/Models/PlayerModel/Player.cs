@@ -5,12 +5,13 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     internal abstract class Player : IPlayer
     {
+        public char Symbol { get; set; }
+
         protected Player()
         {
 
         }
 
-        public char Symbol { get; set; }
         public abstract ResultDTO<IPlayerMove> GetNextMove(string? input);
     }
 }

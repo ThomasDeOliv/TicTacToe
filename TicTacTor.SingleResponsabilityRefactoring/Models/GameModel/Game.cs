@@ -11,7 +11,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
         private readonly IBoard _board;
         private bool _played;
 
-        public Game(IBoard board)
+        protected Game(IBoard board)
         {
             this._board = board;
             this._played = false;
@@ -145,6 +145,11 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
                 // Display game
                 this._board.DisplayGameBoard();
             }
+        }
+
+        public static Game CreateGame(IBoard board)
+        {
+            return new Game(board);
         }
     }
 }

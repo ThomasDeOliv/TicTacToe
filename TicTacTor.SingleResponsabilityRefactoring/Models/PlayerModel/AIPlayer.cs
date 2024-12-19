@@ -8,7 +8,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
     {
         private readonly Random _rnd;
 
-        public AIPlayer() : base()
+        protected AIPlayer() : base()
         {
             this._rnd = new Random();
         }
@@ -17,7 +17,12 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
         {
             int row = this._rnd.Next(0, 4);
             int column = this._rnd.Next(0, 4);
-            return ResultDTO<IPlayerMove>.SuccessdResult(new PlayerMove(row, column));
+            return ResultDTO<IPlayerMove>.CreateSuccessdResult(PlayerMove.CreatePlayerMove(row, column));
+        }
+
+        public static AIPlayer CreateAIPlayer()
+        {
+            return new AIPlayer();
         }
     }
 }

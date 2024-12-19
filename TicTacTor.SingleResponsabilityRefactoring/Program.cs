@@ -15,7 +15,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring
     {
         internal static void Main(string[] args)
         {
-            DIService serviceProvider = new DIService();
+            IDIService serviceProvider = DIService.CreateServiceProvider();
             IGame? game = serviceProvider.ServiceProvider.GetService<IGame>();
             
             if (game is not null)

@@ -6,7 +6,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     internal partial class HumanPlayer : Player
     {
-        public HumanPlayer() : base()
+        protected HumanPlayer() : base()
         {
             
         }
@@ -15,30 +15,30 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
         {
             if (string.IsNullOrEmpty(input))
             {
-                return ResultDTO<IPlayerMove>.FailedResult("Empty");
+                return ResultDTO<IPlayerMove>.CreateFailedResult("Empty");
             }
 
             if (HumanPlayer.IsQuitInstruction(input))
             {
-                return ResultDTO<IPlayerMove>.FailedResult("Quit");
+                return ResultDTO<IPlayerMove>.CreateFailedResult("Quit");
             }
 
             if (!HumanPlayer.TryGetCoordinates(input, out (int, int)? coordinates) || !coordinates.HasValue)
             {
-                return ResultDTO<IPlayerMove>.FailedResult("InvalidInput");
+                return ResultDTO<IPlayerMove>.CreateFailedResult("InvalidInput");
             }
 
             if (!HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item1))
             {
-                return ResultDTO<IPlayerMove>.FailedResult("OutOfRangeRow");
+                return ResultDTO<IPlayerMove>.CreateFailedResult("OutOfRangeRow");
             }
 
             if (!HumanPlayer.EnsureValidCoordinates(coordinates.Value.Item2))
             {
-                return ResultDTO<IPlayerMove>.FailedResult("OutOfRangeColumn");
+                return ResultDTO<IPlayerMove>.CreateFailedResult("OutOfRangeColumn");
             }
 
-            return ResultDTO<IPlayerMove>.SuccessdResult(new PlayerMove(coordinates.Value.Item1, coordinates.Value.Item2));
+            return ResultDTO<IPlayerMove>.CreateSuccessdResult(PlayerMove.CreatePlayerMove(coordinates.Value.Item1, coordinates.Value.Item2));
         }
 
         private static bool IsQuitInstruction(string? input)
@@ -63,6 +63,11 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
         private static bool EnsureValidCoordinates(int rowOrColumnCoordinates)
         {
             return rowOrColumnCoordinates >= 1 && rowOrColumnCoordinates <= 3;
+        }
+
+        public static HumanPlayer CreateHumanPlayer()
+        {
+            return new HumanPlayer();
         }
     }
 }

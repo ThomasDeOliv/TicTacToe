@@ -5,31 +5,34 @@ using TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel;
 
 namespace TicTacTor.SingleResponsabilityRefactoring.Services
 {
-    internal class DIService
+    internal class DIService : IDIService
     {
-        private readonly ServiceProvider _serviceProvider;
+        public ServiceProvider ServiceProvider { get; }
 
-        public DIService()
+        private DIService()
         {
             IServiceCollection serviceDescriptors = new ServiceCollection();
 
-            serviceDescriptors.AddSingleton<HumanPlayer>((sp) => new HumanPlayer());
-            serviceDescriptors.AddSingleton<AIPlayer>((sp) => new AIPlayer());
+            serviceDescriptors.AddSingleton<HumanPlayer>((sp) => HumanPlayer.CreateHumanPlayer());
+            serviceDescriptors.AddSingleton<AIPlayer>((sp) => AIPlayer.CreateAIPlayer());
             serviceDescriptors.AddSingleton<IBoard, Board>((sp) =>
             {
                 IPlayer humanPlayer = sp.GetRequiredService<HumanPlayer>();
                 IPlayer aIPlayer = sp.GetRequiredService<AIPlayer>();
-                return new Board(humanPlayer, aIPlayer);
+                return Board.CreateBoard(humanPlayer, aIPlayer);
             });
             serviceDescriptors.AddSingleton<IGame, Game>((sp) =>
             {
                 IBoard board = sp.GetRequiredService<IBoard>();
-                return new Game(board);
+                return Game.CreateGame(board);
             });
 
-            this._serviceProvider = serviceDescriptors.BuildServiceProvider();
+            this.ServiceProvider = serviceDescriptors.BuildServiceProvider();
         }
 
-        public ServiceProvider ServiceProvider { get => this._serviceProvider; }
+        public static IDIService CreateServiceProvider()
+        {
+            return new DIService();
+        }
     }
 }

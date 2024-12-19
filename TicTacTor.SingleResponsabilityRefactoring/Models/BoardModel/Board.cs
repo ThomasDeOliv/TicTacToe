@@ -14,19 +14,19 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 
         private IPlayer _currentPlayer;
 
-        public Board(IPlayer humanPlayer, IPlayer aIPlayer)
+        protected Board(IPlayer humanPlayer, IPlayer aIPlayer)
         {
             this._grid = new List<ICell>()
             {
-                Cell.EmptyCell(1, 1),
-                Cell.EmptyCell(1, 2),
-                Cell.EmptyCell(1, 3),
-                Cell.EmptyCell(2, 1),
-                Cell.EmptyCell(2, 2),
-                Cell.EmptyCell(2, 3),
-                Cell.EmptyCell(3, 1),
-                Cell.EmptyCell(3, 2),
-                Cell.EmptyCell(3, 3),
+                Cell.CreateEmptyCell(1, 1),
+                Cell.CreateEmptyCell(1, 2),
+                Cell.CreateEmptyCell(1, 3),
+                Cell.CreateEmptyCell(2, 1),
+                Cell.CreateEmptyCell(2, 2),
+                Cell.CreateEmptyCell(2, 3),
+                Cell.CreateEmptyCell(3, 1),
+                Cell.CreateEmptyCell(3, 2),
+                Cell.CreateEmptyCell(3, 3),
             };
 
             this._humanPlayer = humanPlayer;
@@ -146,6 +146,11 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
         public void SetAIPlayerSymbol(GameSymbol gameSymbol)
         {
             this._aIPlayer.Symbol = (char)gameSymbol;
+        }
+
+        public static Board CreateBoard(IPlayer humanPlayer, IPlayer aIPlayer)
+        {
+            return new Board(humanPlayer, aIPlayer);
         }
     }
 }
