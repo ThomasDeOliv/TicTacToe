@@ -8,7 +8,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
 {
     internal class Board : IBoard
     {
-        private readonly List<ICell> _grid;
+        private readonly IEnumerable<ICell> _grid;
         private readonly IPlayer _player;
         private readonly IPlayer _aIPlayer;
 
@@ -29,7 +29,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.BoardModel
                 Cell.EmptyCell(3, 3),
             };
 
-            this._player = new Player();
+            this._player = new HumanPlayer();
             this._aIPlayer = new AIPlayer();
 
             this._currentPlayer = _player;

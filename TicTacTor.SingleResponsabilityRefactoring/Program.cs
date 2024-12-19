@@ -13,8 +13,8 @@ namespace TicTacTor.SingleResponsabilityRefactoring
         internal static void Main(string[] args)
         {
             Game gameSession = new Game();
-            gameSession.InitGameSession();
-            gameSession.InitGame();
+            gameSession.Init();
+            gameSession.Play();
         }
     }
 }

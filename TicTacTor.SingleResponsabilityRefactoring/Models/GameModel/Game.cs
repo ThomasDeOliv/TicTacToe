@@ -17,7 +17,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
             this._played = false;
         }
 
-        public void InitGameSession()
+        public void Init()
         {
             Console.Write("Selectionnez votre équipe (X ou O) : ");
             string? input = Console.ReadLine();
@@ -47,7 +47,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
             }
         }
 
-        public void InitGame()
+        public void Play()
         {
             if (!this._played)
             {
