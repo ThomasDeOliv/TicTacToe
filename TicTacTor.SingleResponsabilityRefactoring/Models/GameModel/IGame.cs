@@ -2,7 +2,7 @@
 {
     internal interface IGame
     {
-        void StartGameSession();
+        void InitGame();
         void InitGameSession();
     }
 }

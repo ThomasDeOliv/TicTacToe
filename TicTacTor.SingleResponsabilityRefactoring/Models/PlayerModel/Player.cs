@@ -6,11 +6,6 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     internal partial class Player : IPlayer
     {
-        protected Player()
-        {
-
-        }
-
         public char Symbol { get; set; }
 
         public virtual ResultDTO<IPlayerMove> GetNextMove(string? input)
@@ -41,11 +36,6 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.PlayerModel
             }
 
             return ResultDTO<IPlayerMove>.SuccessdResult(new PlayerMove(coordinates.Value.Item1, coordinates.Value.Item2));
-        }
-
-        public static Player CreatePlayer()
-        {
-            return new Player();
         }
     }
 }

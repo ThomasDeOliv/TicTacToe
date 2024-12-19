@@ -11,15 +11,10 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
         private readonly IBoard _boardGame;
         private bool _played;
 
-        private Game()
+        public Game()
         {
-            this._boardGame = Board.CreateBoardGame();
+            this._boardGame = new Board();
             this._played = false;
-        }
-
-        public static Game CreateGame()
-        {
-            return new Game();
         }
 
         public void InitGameSession()
@@ -52,7 +47,7 @@ namespace TicTacTor.SingleResponsabilityRefactoring.Models.GameModel
             }
         }
 
-        public void StartGameSession()
+        public void InitGame()
         {
             if (!this._played)
             {
