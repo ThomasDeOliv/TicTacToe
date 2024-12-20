@@ -3,20 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using TicTacToe.SingleResponsabilityRefactoring.DTO;
 using TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel.PlayerMoveModel;
+using TicTacToe.SingleResponsabilityRefactoring.Services.InOut;
 
 namespace TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel
 {
     public partial class HumanPlayer : Player
     {
+        private readonly IInOutService _inOutService;
+
         public override bool IsAI { get; }
 
-        protected HumanPlayer() : base()
+        protected HumanPlayer(IInOutService inOutService) : base()
         {
+            this._inOutService = inOutService;
             this.IsAI = false;
         }
 
-        public override ResultDTO<IPlayerMove> GetNextMove(string? input)
+        public override ResultDTO<IPlayerMove> GetNextMove()
         {
+            string? input = _inOutService.GetHumanUserInput();
+
             if (string.IsNullOrEmpty(input))
             {
                 return ResultDTO<IPlayerMove>.CreateFailedResult("Empty");
@@ -53,10 +59,9 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel
             return ResultDTO<IPlayerMove>.CreateSuccessdResult(PlayerMove.Create(coordinates.Value.Item1, coordinates.Value.Item2));
         }
 
-        public override async Task<ResultDTO<IPlayerMove>> GetNextMoveAsync(Func<ValueTask> waitingAsyncCallback, string? input, CancellationToken cancellationToken = default)
+        public override async Task<ResultDTO<IPlayerMove>> GetNextMoveAsync(CancellationToken cancellationToken = default)
         {
-            await waitingAsyncCallback.Invoke();
-            return await Task.FromResult(this.GetNextMove(input));
+            return await Task.FromResult(this.GetNextMove());
         }
 
         private static bool IsQuitInstruction(string? input)
@@ -83,9 +88,9 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel
             return rowOrColumnCoordinates >= 1 && rowOrColumnCoordinates <= 3;
         }
 
-        public static HumanPlayer Create()
+        public static HumanPlayer Create(IInOutService inOutService)
         {
-            return new HumanPlayer();
+            return new HumanPlayer(inOutService);
         }
     }
 }

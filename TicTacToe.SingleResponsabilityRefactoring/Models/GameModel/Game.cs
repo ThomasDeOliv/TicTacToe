@@ -1,20 +1,22 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TicTacToe.SingleResponsabilityRefactoring.DTO;
 using TicTacToe.SingleResponsabilityRefactoring.Models.BoardModel;
 using TicTacToe.SingleResponsabilityRefactoring.Models.PlayerModel.PlayerMoveModel;
+using TicTacToe.SingleResponsabilityRefactoring.Services.InOut;
 
 namespace TicTacToe.SingleResponsabilityRefactoring.Models.GameModel
 {
     public class Game : IGame
     {
+        private readonly IInOutService _inOutService1;
         private readonly IBoard _board;
         private bool _played;
 
-        protected Game(IBoard board)
+        protected Game(IInOutService inOutService, IBoard board)
         {
+            this._inOutService1 = inOutService;
             this._board = board;
             this._played = false;
         }
@@ -61,9 +63,7 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.GameModel
                 {
                     Console.Write($"Player {this._board.CurrentPlayer.Symbol} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
 
-                    string? input = this._board.CurrentPlayer.IsAI ? null : Console.ReadLine();
-
-                    ResultDTO<IPlayerMove> result = this._board.CurrentPlayer.GetNextMove(input);
+                    ResultDTO<IPlayerMove> result = this._board.CurrentPlayer.GetNextMove();
 
                     if (!result.Success)
                     {
@@ -157,29 +157,9 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.GameModel
                 {
                     Console.Write($"Player {this._board.CurrentPlayer.Symbol} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit... ");
 
-                    string? input = this._board.CurrentPlayer.IsAI ? null : Console.ReadLine();
-
                     Console.WriteLine();
 
-                    ResultDTO<IPlayerMove> result = await this._board.CurrentPlayer.GetNextMoveAsync(async () =>
-                    {
-                        if (this._board.CurrentPlayer.IsAI)
-                        {
-                            StringBuilder stringBuilder = new StringBuilder(50);
-                            stringBuilder.Append($"Grande reflexion de la part de l'IA (joueur {this._board.CurrentPlayer.Symbol})");
-                            Console.WriteLine(stringBuilder.ToString());
-                            for (int i = 0; i < 3; i++)
-                            {
-                                await Task.Delay(500);
-                                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                stringBuilder.Append('.');
-                                Console.WriteLine(stringBuilder.ToString());
-                            }
-                            Console.WriteLine();
-                            await Task.Delay(1000);
-                        }
-
-                    }, input, cancellationToken);
+                    ResultDTO<IPlayerMove> result = await this._board.CurrentPlayer.GetNextMoveAsync(cancellationToken);
 
                     if (!result.Success)
                     {
@@ -263,9 +243,9 @@ namespace TicTacToe.SingleResponsabilityRefactoring.Models.GameModel
             }
         }
 
-        public static Game Create(IBoard board)
+        public static Game Create(IInOutService inOutService, IBoard board)
         {
-            return new Game(board);
+            return new Game(inOutService, board);
         }
     }
 }
