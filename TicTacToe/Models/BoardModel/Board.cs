@@ -29,13 +29,6 @@ namespace TicTacToe.Models.BoardModel
             return new Board();
         }
 
-        private ICell? GetCell(int row, int column)
-        {
-            return this._grid.Where(cell => cell.Row == row)
-                .Where(cell => cell.Column == column)
-                .FirstOrDefault();
-        }
-
         public IReadOnlyList<ICell> GetEmptyCells()
         {
             IReadOnlyList<ICell> emptyCellsList = new List<ICell>(this._grid.Where((c) => !c.Value.HasValue));
@@ -44,7 +37,9 @@ namespace TicTacToe.Models.BoardModel
 
         public bool WriteInCell(int targetRow, int targetColumn, char symbol)
         {
-            ICell? cell = GetCell(targetRow, targetColumn);
+            ICell? cell = this._grid.Where(cell => cell.Row == targetRow)
+                .Where(cell => cell.Column == targetColumn)
+                .FirstOrDefault();
 
             if (cell == null || cell.Value == (char)GameSymbol.X || cell.Value == (char)GameSymbol.O)
             {
@@ -100,7 +95,9 @@ namespace TicTacToe.Models.BoardModel
 
         public char GetCellContent(int row, int column)
         {
-            ICell? currentCell = GetCell(row, column);
+            ICell? currentCell = this._grid.Where(cell => cell.Row == row)
+                .Where(cell => cell.Column == column)
+                .FirstOrDefault();
 
             if (currentCell is not null
                 && currentCell.Value.HasValue)

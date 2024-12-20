@@ -8,4 +8,8 @@
 	  <RootNamespace>Connect4</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
